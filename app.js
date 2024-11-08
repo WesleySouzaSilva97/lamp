@@ -10,6 +10,12 @@ function quebrar() {
     // Passo 1: copiar o arquivo de audio para o projeto
     // Passo 2: usar a classe Audio(biblioteca nterna JS)
     let som = new Audio()
-    som.src= "sound/glassbreaking.wav"
     som.play()
+    som.src= "sound/glassbreaking.wav"
+  
+}
+
+function onoff() {
+    document.getElementById('interruptor').src="img/swon.png"
+    
 }
