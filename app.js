@@ -10,6 +10,10 @@ let lampada = true // a lâmpada está ok
 // Pré carregamento de arquivo de áudio
 let som = new Audio("sound/breaking-glass.mp3")
 
+// lanterna (pré carregamento)
+let stream, track
+inicializarLanterna()
+
 function quebrar() {
     if (lampada === true) {
         document.getElementById('lamp').src = "img/broken.jpg"
@@ -92,3 +96,78 @@ botao.addEventListener('touchend', (event) => {
         lampadaImg.src = "img/off.jpg"
     }
 })
+
+// Lanterna (torch)
+async function inicializarLanterna() { //variaveis de apoio
+    //solicita aceso à câmera traseira sem exibir o video 
+    try {
+        // Solicita acesso à câmera traseira sem exibir o vídeo
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" }
+        })
+        
+        // Obtém o track do vídeo para controlar a lanterna
+        track = stream.getVideoTracks()[0]
+        
+        // Verifica se o dispositivo suporta o uso da lanterna
+        const capabilities = track.getCapabilities()
+        if (!capabilities.torch) {
+            console.log("Lanterna não suportada no dispositivo.")
+            return
+        }
+    } catch (error) {
+        console.error(`Erro ao inicializar a lanterna: ${error}`)
+    }
+}
+
+
+
+// Função para ligar a lanterna (torch)
+// lanterna (pré carregamento)
+let stream, track
+inicializarLanterna()
+
+// Lanterna
+// Inicializa o stream e configura o track apenas uma vez
+async function inicializarLanterna() {
+    try {
+        // Solicita acesso à câmera traseira sem exibir o vídeo
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" }
+        })
+        
+        // Obtém o track do vídeo para controlar a lanterna
+        track = stream.getVideoTracks()[0]
+        
+        // Verifica se o dispositivo suporta o uso da lanterna
+        const capabilities = track.getCapabilities()
+        if (!capabilities.torch) {
+            console.log("Lanterna não suportada no dispositivo.")
+            return
+        }
+    } catch (error) {
+        console.error(`Erro ao inicializar a lanterna: ${error}`)
+    }
+}
+
+// Função para ligar a lanterna (torch)
+async function ligar() {
+    if (track) {
+        try {
+            await track.applyConstraints({ advanced: [{ torch: true }] })
+        } catch (error) {
+            console.error(`Erro ao inicializar a lanterna: ${error}`)
+        }
+    }
+}
+
+// Função para desligar a lanterna sem parar o stream
+async function desligar() {
+    if (track) {
+        try {
+            await track.applyConstraints({ advanced: [{ torch: false }] })
+        } catch (error) {
+            console.error(`Erro ao inicializar a lanterna: ${error}`)
+        }
+    }
+}
